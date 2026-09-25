@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DH DOW - Modern Video Downloader</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- HEADER TOP BAR -->
+        <header class="top-header">
+            <div class="brand-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">DH DOW</span>
+                    <span class="logo-badge">PRO v2.0</span>
+                </div>
+            </div>
+
+            <!-- Supported Platforms Ticker/Chips -->
+            <div class="platform-chips">
+                <span class="chip yt"><i class="fa-brands fa-youtube"></i> YouTube</span>
+                <span class="chip tt"><i class="fa-brands fa-tiktok"></i> TikTok</span>
+                <span class="chip fb"><i class="fa-brands fa-facebook"></i> Facebook</span>
+                <span class="chip ig"><i class="fa-brands fa-instagram"></i> Instagram</span>
+                <span class="chip bili"><i class="fa-solid fa-play"></i> Bilibili</span>
+                <span class="chip tw"><i class="fa-brands fa-x-twitter"></i> Twitter/X</span>
+            </div>
+
+            <!-- Header Controls: Language Switcher & Contact Button -->
+            <div class="header-actions">
+                <!-- Language Switcher Tab (VN / ENG) -->
+                <div class="lang-switch-container">
+                    <button class="lang-btn active" id="lang-vn" onclick="setLanguage('vn')">
+                        <span class="flag">🇻🇳</span> <span class="lang-lbl">VN</span>
+                    </button>
+                    <button class="lang-btn" id="lang-eng" onclick="setLanguage('eng')">
+                        <span class="flag">🇬🇧</span> <span class="lang-lbl">ENG</span>
+                    </button>
+                </div>
+
+                <!-- Contact Modal Trigger Button -->
+                <button class="btn-contact-trigger" onclick="openContactModal()">
+                    <i class="fa-solid fa-headset"></i>
+                    <span data-i18n="nav_contact">Thông Tin Liên Hệ</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT LAYOUT -->
+        <main class="main-content">
+            
+            <!-- HERO INPUT SECTION -->
+            <section class="hero-section">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span data-i18n="hero_badge">You-Get Engine Powered • Tốc Độ Cao & Miễn Phí</span>
+                </div>
+                <h1 class="hero-title" data-i18n="hero_title">Tải Video Chất Lượng Cao Đa Nền Tảng</h1>
+                <p class="hero-subtitle" data-i18n="hero_subtitle">Dán liên kết từ YouTube, TikTok, Facebook, Bilibili, Instagram để tải video Full HD/4K hoặc Audio MP3 ngay lập tức</p>
+
+                <!-- URL INPUT CARD -->
+                <div class="url-input-card">
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-link input-icon"></i>
+                        <input type="text" id="url-input" class="url-field" placeholder="Dán đường dẫn Video tại đây (vd: https://youtube.com/watch?...)" data-i18n-ph="input_placeholder" autocomplete="off">
+                        <button class="btn-clear" id="btn-clear-input" onclick="clearInput()" title="Xóa">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-primary" id="btn-analyze" onclick="analyzeUrl()">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span data-i18n="btn_analyze">Phân Tích URL</span>
+                        </button>
+                        <button class="btn-secondary" id="btn-quick-download" onclick="quickDownload()">
+                            <i class="fa-solid fa-download"></i>
+                            <span data-i18n="btn_quick_download">Tải Nhanh (Best)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DOWNLOAD PATH SELECTOR -->
+                <div class="path-selector-bar">
+                    <i class="fa-solid fa-folder-open path-icon"></i>
+                    <span class="path-label" data-i18n="save_path_label">Thư mục lưu:</span>
+                    <input type="text" id="save-path-display" class="path-display" readonly value="Downloads/DH_DOW">
+                    <button class="btn-path-change" onclick="selectSaveFolder()">
+                        <i class="fa-solid fa-folder-plus"></i> <span data-i18n="btn_change_folder">Đổi Thư Mục</span>
+                    </button>
+                    <button class="btn-path-open" onclick="openSaveFolder()" title="Mở thư mục trên máy tính">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="btn_open_folder">Mở Thư Mục</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ANALYZED VIDEO PREVIEW CARD (HIDDEN BY DEFAULT) -->
+            <section class="preview-section hidden" id="preview-section">
+                <div class="preview-card">
+                    <div class="preview-thumb-container">
+                        <img src="" id="preview-thumb" alt="Video Thumbnail" class="preview-thumb">
+                        <span class="platform-tag" id="preview-platform">YouTube</span>
+                    </div>
+
+                    <div class="preview-info">
+                        <h3 class="preview-title" id="preview-title">Video Title Placeholder</h3>
+                        <div class="preview-meta">
+                            <span><i class="fa-solid fa-clock"></i> <span id="preview-duration">00:00</span></span>
+                            <span><i class="fa-solid fa-shield-halved"></i> Engine: <strong style="color:var(--accent-cyan)">You-Get / YT-DLP</strong></span>
+                        </div>
+
+                        <!-- QUALITY OPTION SELECTOR -->
+                        <div class="quality-selector-group">
+                            <label data-i18n="select_quality_label">Chọn Chất Lượng / Định Dạng:</label>
+                            <div class="quality-chips" id="quality-options">
+                                <button class="q-chip active" data-q="best" onclick="selectQualityChip(this)">
+                                    <i class="fa-solid fa-star"></i> Best Quality
+                                </button>
+                                <button class="q-chip" data-q="1080p" onclick="selectQualityChip(this)">
+                                    <i class="fa-solid fa-display"></i> Full HD (1080p)
+                                </button>
+                                <button class="q-chip" data-q="720p" onclick="selectQualityChip(this)">
+                                    <i class="fa-solid fa-tv"></i> HD (720p)
+                                </button>
+                                <button class="q-chip" data-q="480p" onclick="selectQualityChip(this)">
+                                    <i class="fa-solid fa-mobile-screen"></i> 480p
+                                </button>
+                                <button class="q-chip" data-q="mp3" onclick="selectQualityChip(this)">
+                                    <i class="fa-solid fa-music"></i> Audio MP3
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- START DOWNLOAD FROM PREVIEW -->
+                        <div class="preview-actions">
+                            <button class="btn-download-start" onclick="confirmDownloadFromPreview()">
+                                <i class="fa-solid fa-cloud-arrow-down"></i>
+                                <span data-i18n="btn_start_download_now">Bắt Đầu Tải Video Ngay</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACTIVE DOWNLOAD QUEUE SECTION -->
+            <section class="downloads-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fa-solid fa-spinner fa-spin-pulse icon-glow"></i>
+                        <span data-i18n="active_downloads_title">Tiến Trình Tải Xuống</span>
+                        <span class="active-count-badge" id="active-count">0</span>
+                    </h2>
+                </div>
+
+                <div class="queue-list" id="queue-list">
+                    <!-- Queue items will be dynamically injected here -->
+                    <div class="empty-state" id="queue-empty">
+                        <i class="fa-solid fa-inbox"></i>
+                        <p data-i18n="queue_empty_text">Chưa có tiến trình tải nào. Hãy dán liên kết ở trên để bắt đầu!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DOWNLOAD HISTORY SECTION -->
+            <section class="history-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span data-i18n="history_title">Lịch Sử Đã Tải</span>
+                    </h2>
+                    <button class="btn-clear-history" onclick="clearHistory()">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span data-i18n="btn_clear_history">Xóa Lịch Sử</span>
+                    </button>
+                </div>
+
+                <div class="history-card">
+                    <div class="table-responsive">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_title">Tên Video / Đường Dẫn</th>
+                                    <th data-i18n="th_platform">Nền Tảng</th>
+                                    <th data-i18n="th_quality">Chất Lượng</th>
+                                    <th data-i18n="th_time">Thời Gian</th>
+                                    <th data-i18n="th_status">Trạng Thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr>
+                                    <td colspan="5" class="text-center" data-i18n="history_empty">Chưa có lịch sử tải xuống.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <span>© 2026 <strong>DH DOW</strong> • Developed by DucDuy</span>
+            </div>
+            <div class="footer-center">
+                <button class="footer-link-btn" onclick="openContactModal()">
+                    <i class="fa-solid fa-phone"></i> 0862.610.313
+                </button>
+                <button class="footer-link-btn" onclick="openFacebook()">
+                    <i class="fa-brands fa-facebook"></i> Facebook
+                </button>
+                <button class="footer-link-btn" onclick="openZaloModal()">
+                    <i class="fa-solid fa-comment-dots"></i> Zalo
+                </button>
+            </div>
+            <div class="footer-right">
+                <span class="engine-tag"><i class="fa-solid fa-cube"></i> You-Get Native Engine</span>
+            </div>
+        </footer>
+
+        <!-- CONTACT MODAL ("ẤN VÀO MỤC SẼ HIỆN RA") -->
+        <div class="modal-backdrop hidden" id="contact-modal" onclick="closeContactModalOnBackdrop(event)">
+            <div class="modal-card">
+                <button class="modal-close-btn" onclick="closeContactModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="modal-header">
+                    <div class="author-avatar">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <h2 class="modal-title" data-i18n="contact_modal_title">Thông Tin Liên Hệ Tác Giả</h2>
+                    <p class="modal-subtitle" data-i18n="contact_modal_subtitle">Ứng dụng DH DOW - Tải Video Đa Nền Tảng Cao Cấp</p>
+                </div>
+
+                <div class="contact-items-list">
+
+                    <!-- ITEM 1: SỐ ĐIỆN THOẠI -->
+                    <div class="contact-item-card" onclick="triggerPhoneAction()">
+                        <div class="contact-icon phone">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label" data-i18n="contact_phone_lbl">Số Điện Thoại / Hotline</span>
+                            <span class="contact-value">0862.610.313</span>
+                            <span class="contact-hint" data-i18n="contact_phone_hint">Ấn vào để Sao chép hoặc Gọi điện</span>
+                        </div>
+                        <div class="contact-action-btn">
+                            <i class="fa-solid fa-copy"></i>
+                        </div>
+                    </div>
+
+                    <!-- ITEM 2: FACEBOOK -->
+                    <div class="contact-item-card" onclick="openFacebook()">
+                        <div class="contact-icon facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">Facebook Cá Nhân</span>
+                            <span class="contact-value">facebook.com/ducduy2512</span>
+                            <span class="contact-hint" data-i18n="contact_fb_hint">Ấn vào để truy cập trang Facebook</span>
+                        </div>
+                        <div class="contact-action-btn">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </div>
+
+                    <!-- ITEM 3: ZALO -->
+                    <div class="contact-item-card" onclick="triggerZaloAction()">
+                        <div class="contact-icon zalo">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-label">Zalo Trực Tuyến</span>
+                            <span class="contact-value">0862.610.313</span>
+                            <span class="contact-hint" data-i18n="contact_zalo_hint">Ấn vào để nhắn tin Zalo ngay</span>
+                        </div>
+                        <div class="contact-action-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- MODAL FOOTER NOTE -->
+                <div class="modal-footer-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span data-i18n="contact_modal_footer">Cần hỗ trợ kỹ thuật hoặc đóng góp ý kiến? Hãy liên hệ trực tiếp qua SĐT hoặc Zalo trên!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOAST NOTIFICATION CONTAINER -->
+        <div class="toast-container" id="toast-container"></div>
+
+    </div>
+
+    <!-- MAIN JS SCRIPT -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
